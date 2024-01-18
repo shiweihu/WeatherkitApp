@@ -1,0 +1,32 @@
+package com.unisa.weatherkitapp.data.forecast
+
+data class Night(
+    val CloudCover: Int = 0,
+    val Evapotranspiration: Evapotranspiration = Evapotranspiration(),
+    val HasPrecipitation: Boolean = false,
+    val HoursOfIce: Int = 0,
+    val HoursOfPrecipitation: Double = 0.0,
+    val HoursOfRain: Double = 0.0,
+    val HoursOfSnow: Int = 0,
+    val Ice: Ice = Ice(),
+    val IceProbability: Int = 0,
+    val Icon: Int = 0,
+    val IconPhrase: String = "",
+    val LongPhrase: String = "",
+    val PrecipitationIntensity: String = "",
+    val PrecipitationProbability: Int = 0,
+    val PrecipitationType: String = "",
+    val Rain: Rain = Rain(),
+    val RainProbability: Int = 0,
+    val RelativeHumidity: RelativeHumidity = RelativeHumidity(),
+    val ShortPhrase: String = "",
+    val Snow: Snow = Snow(),
+    val SnowProbability: Int = 0,
+    val SolarIrradiance: SolarIrradiance = SolarIrradiance(),
+    val ThunderstormProbability: Int = 0,
+    val TotalLiquid: TotalLiquid = TotalLiquid(),
+    val WetBulbGlobeTemperature: WetBulbGlobeTemperature = WetBulbGlobeTemperature(),
+    val WetBulbTemperature: WetBulbTemperature = WetBulbTemperature(),
+    val Wind: Wind = Wind(),
+    val WindGust: WindGust = WindGust()
+)
