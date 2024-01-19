@@ -910,7 +910,7 @@ fun DayView(
             Spacer(modifier = Modifier.width(10.dp))
             Column {
                 Text(
-                    text = "${dailyForecast.Temperature.Minimum.Value}${dailyForecast.Temperature.Minimum.Unit}",
+                    text = "${dailyForecast.Temperature.Maximum.Value}${dailyForecast.Temperature.Minimum.Unit}",
                     style = MaterialTheme.typography.displayMedium
                 )
                 Text(

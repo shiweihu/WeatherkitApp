@@ -9,15 +9,26 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -36,12 +47,14 @@ import com.unisa.weatherkitapp.compose.view.MyAPPCompose
 import com.unisa.weatherkitapp.data.DevicePoint
 import com.unisa.weatherkitapp.public.variable.LocalDevice
 import com.unisa.weatherkitapp.public.variable.LocalUnitType
+import com.unisa.weatherkitapp.repository.Utils
 import com.unisa.weatherkitapp.ui.theme.WeatherkitAppTheme
 import com.unisa.weatherkitapp.viewmodel.MainActivityUiState
 import com.unisa.weatherkitapp.viewmodel.MainActivityViewModel
 import com.unisa.weatherkitapp.worker.AlarmsWorker
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -84,6 +97,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        setLanguageCode()
+    }
+
+    private fun setLanguageCode(){
+        val languageCodeToLocalization = Utils.languageCodeToLocalization
+        val languageCode = Locale.getDefault().language
+        val countryCode = Locale.getDefault().country.lowercase(Locale.getDefault())
+        val list = languageCodeToLocalization[languageCode]
+        if(!list.isNullOrEmpty()) {
+            MyApplication.LOCAL_LANGUAGE_CODE = list.find {
+                it.contains(countryCode)
+            } ?: languageCode
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
@@ -111,6 +141,8 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
         setContent {
             WeatherkitAppTheme {
                 // A surface container using the 'background' color from the theme
@@ -123,11 +155,35 @@ class MainActivity : ComponentActivity() {
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colorScheme.background
                         ) {
-                            MyAPPCompose()
+                            val isOnline by model.isOnlineFlow(this).collectAsStateWithLifecycle(true)
+                            if(isOnline){
+                                MyAPPCompose()
+                            }else{
+                                NetworkDisconnectionCompose()
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun NetworkDisconnectionCompose(){
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize(1f).background(MaterialTheme.colorScheme.errorContainer)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CircularProgressIndicator(
+                modifier = Modifier.size(64.dp),
+                color = MaterialTheme.colorScheme.secondary,
+                trackColor = MaterialTheme.colorScheme.surfaceVariant,
+            )
+            Text(text = stringResource(id = R.string.network_state), style = MaterialTheme.typography.titleLarge)
         }
     }
 }

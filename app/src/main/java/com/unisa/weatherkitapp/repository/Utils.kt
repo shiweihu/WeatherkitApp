@@ -151,7 +151,7 @@ class Utils @Inject constructor() {
         7 to R.drawable.mostly_cloudy,
         8 to R.drawable.mostly_cloudy,
         11 to R.drawable.fog,
-        12 to R.drawable.showers,
+        12 to R.drawable.showers_icon,
         13 to R.drawable.mostly_cloudy_showers,
         14 to R.drawable.mostly_cloudy_showers,
         15 to R.drawable.t_storms,

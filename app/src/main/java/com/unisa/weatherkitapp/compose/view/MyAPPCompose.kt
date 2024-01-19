@@ -4,6 +4,9 @@ import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
 import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
@@ -38,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
@@ -82,7 +86,9 @@ fun MyAPPCompose(
             LocalsnackbarHostState provides snackbarHostState
         ) {
             val configuration = LocalConfiguration.current
-            val screenWidthDP = configuration.screenWidthDp
+            val density = LocalDensity.current.density
+            val screenWidthDP = configuration.screenWidthDp * density
+
 
             Scaffold(
                 snackbarHost = {
@@ -97,22 +103,22 @@ fun MyAPPCompose(
                         .padding(paddingValue),
                     enterTransition = {
                         slideIn(
-                            animationSpec = spring(Spring.DampingRatioNoBouncy),
+                            animationSpec = tween(300, easing = FastOutSlowInEasing),
                             initialOffset = {
-                                return@slideIn IntOffset(-screenWidthDP, 0)
+                                return@slideIn IntOffset(-screenWidthDP.toInt(), 0)
                             })
                     },
                     popEnterTransition = {
-                        fadeIn(animationSpec = tween(200))
+                        fadeIn(animationSpec = tween(300,easing = FastOutSlowInEasing))
                     },
                     popExitTransition = {
 
-                        slideOut(animationSpec = tween(200), targetOffset = {
-                            return@slideOut IntOffset(-screenWidthDP, 0)
+                        slideOut(animationSpec = tween(300,easing = FastOutLinearInEasing), targetOffset = {
+                            return@slideOut IntOffset(-screenWidthDP.toInt(), 0)
                         })
                     },
                     exitTransition = {
-                        fadeOut(animationSpec = tween(200))
+                        fadeOut(animationSpec = tween(300,easing = FastOutLinearInEasing))
                     }
                 ) {
                     composable(Route.MAIN.name) {

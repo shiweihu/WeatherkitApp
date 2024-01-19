@@ -1,5 +1,6 @@
 package com.unisa.weatherkitapp.compose.view
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -48,6 +49,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -99,28 +101,28 @@ fun SettingCompose(
                 .fillMaxSize(1f)
                 .verticalScroll(state = rememberScrollState())
         ) {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .padding(5.dp, 5.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "${stringResource(id = R.string.temperature_unit)}(${stringResource(id = if (unitType) R.string.celsius else R.string.fahrenheit)})",
-                    style = MaterialTheme.typography.titleMedium
-                )
-                Switch(
-                    checked = unitChecked,
-                    onCheckedChange = {
-                        unitChecked = it
-                        model.setUnitType(context, it)
-                    }
-                )
 
-            }
-            Divider()
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .padding(5.dp, 5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${stringResource(id = R.string.temperature_unit)}(${stringResource(id = if (unitType) R.string.celsius else R.string.fahrenheit)})",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Switch(
+                        checked = unitChecked,
+                        onCheckedChange = {
+                            unitChecked = it
+                            model.setUnitType(context, it)
+                        }
+                    )
 
+                }
+                Divider()
         }
     }
 }
