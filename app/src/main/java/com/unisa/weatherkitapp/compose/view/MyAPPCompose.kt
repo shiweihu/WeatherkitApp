@@ -136,7 +136,6 @@ fun MyAPPCompose(
                                                 return@map item.EpochDateTime
                                             }.minOrNull()?.toLong()?.times(1000) ?: 0
                                     }
-                                    delay(60 * 1000 * 10) // 10分钟检查一次
                                     val currentTime = Calendar.getInstance(zoomTimeZone)
                                     val timeDifferenceInMillis =
                                         currentTime.timeInMillis - lastUpdateTime.timeInMillis
@@ -149,6 +148,7 @@ fun MyAPPCompose(
                                         )
                                         return@LaunchedEffect
                                     }
+                                    delay(60 * 1000 * 10) // 10分钟检查一次
                                 }
                             }
                         }
