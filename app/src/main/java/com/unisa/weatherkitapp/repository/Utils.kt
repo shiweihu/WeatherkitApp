@@ -7,6 +7,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat.startActivity
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.unisa.weatherkitapp.R
 import com.unisa.weatherkitapp.data.currentweather.BaseParemeters
@@ -23,6 +24,22 @@ class Utils @Inject constructor() {
 
     fun navigateToWeb(url:String,context: Context){
         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+
+
+    fun getOpenCount(context: Context):Flow<Int>{
+        val countKey  = intPreferencesKey("count")
+        return context.dataStore.data.map { preferences ->
+            preferences[countKey] ?: 0
+        }
+    }
+
+    suspend fun setOpenCount(context: Context,count:Int){
+        val countKey  = intPreferencesKey("count")
+        context.dataStore.edit {preferences->
+            preferences[countKey] = count
+        }
     }
 
     fun getUnitType(context: Context):Flow<Boolean>{

@@ -2,6 +2,7 @@ package com.unisa.weatherkitapp.public.variable
 
 import android.os.Build
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.unisa.weatherkitapp.BuildConfig
@@ -21,9 +22,10 @@ val LocalUnitType = compositionLocalOf {
    true
 }
 
-val LocalsnackbarHostState = staticCompositionLocalOf<SnackbarHostState?>{
-   null
+val LocalsnackbarHostState = staticCompositionLocalOf<SnackbarHostState>{
+   error("No SnackbarHostState provided")
 }
+
 
 val MAINCOMPOSE_ADID = BuildConfig.maincompose_banner
 val SEARCH_ADID = BuildConfig.search_banner

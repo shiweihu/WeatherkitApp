@@ -18,7 +18,7 @@ data class Day(
     val PrecipitationType: String = "",
     val Rain: Rain = Rain(),
     val RainProbability: Double = 0.0,
-    val RelativeHumidity: RelativeHumidity = RelativeHumidity(),
+    val RelativeHumidity: RelativeHumidity? = RelativeHumidity(),
     val ShortPhrase: String = "",
     val Snow: Snow = Snow(),
     val SnowProbability: Double = 0.0,

@@ -43,10 +43,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -252,7 +249,7 @@ fun MainCompose(
                                     }
                                 }
                                 scope.launch {
-                                    snackbarHostState?.showSnackbar(message = errorMessage, duration = SnackbarDuration.Short)
+                                    snackbarHostState.showSnackbar(message = errorMessage, duration = SnackbarDuration.Short)
                                 }
                             }
                         }
@@ -989,10 +986,12 @@ fun DayView(
             strId = R.string.solar_irradiance,
             str = "${dailyForecast.Day.SolarIrradiance.Value}${dailyForecast.Day.SolarIrradiance.Unit}"
         )
-        MyListItem(
-            strId = R.string.relative_humidity,
-            str = "${dailyForecast.Day.RelativeHumidity.Minimum}% - ${dailyForecast.Day.RelativeHumidity.Maximum}%"
-        )
+        if(dailyForecast.Day.RelativeHumidity != null){
+            MyListItem(
+                strId = R.string.relative_humidity,
+                str = "${dailyForecast.Day.RelativeHumidity.Minimum}% - ${dailyForecast.Day.RelativeHumidity.Maximum}%"
+            )
+        }
         MyListItem(
             strId = R.string.wet_bulb_temperature,
             supportId = R.string.wet_bulb_temperature_description,
@@ -1110,10 +1109,12 @@ fun NightView(
             strId = R.string.solar_irradiance,
             str = "${dailyForecast.Night.SolarIrradiance.Value}${dailyForecast.Night.SolarIrradiance.Unit}"
         )
-        MyListItem(
-            strId = R.string.relative_humidity,
-            str = "${dailyForecast.Night.RelativeHumidity.Minimum}% - ${dailyForecast.Night.RelativeHumidity.Maximum}%"
-        )
+        if(dailyForecast.Night.RelativeHumidity != null){
+            MyListItem(
+                strId = R.string.relative_humidity,
+                str = "${dailyForecast.Night.RelativeHumidity.Minimum}% - ${dailyForecast.Night.RelativeHumidity.Maximum}%"
+            )
+        }
         MyListItem(
             strId = R.string.wet_bulb_temperature,
             supportId = R.string.wet_bulb_temperature_description,

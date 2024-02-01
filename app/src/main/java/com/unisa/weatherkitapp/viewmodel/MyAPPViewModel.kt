@@ -1,6 +1,7 @@
 package com.unisa.weatherkitapp.viewmodel
 
 import android.content.Context
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -64,35 +65,28 @@ class MyAPPViewModel @Inject constructor(
 
     private val _weatherInfoPackage: MutableState<WeatherInfoPackage?> = mutableStateOf(null)
     val weatherInfoPackage: State<WeatherInfoPackage?> get() = _weatherInfoPackage
-    fun requestWeatherInfo(locationInfo: LocationInfo,matrics:Boolean){
+    fun requestWeatherInfo(locationInfo: LocationInfo,matrics:Boolean,onError:(Exception)->Unit){
         _weatherInfoPackage.value = null
-        viewModelScope.launch {
-            val currentWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestCurrentWeather(locationInfo.Key)
-            }
-            val hourlyWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestHourlyWeather(locationInfo.Key,metric = matrics)
-            }
-            val forecastWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestForecastWeather(locationInfo.Key,metric = matrics)
-            }
-            val list = awaitAll(currentWeatherResponseJob,forecastWeatherResponseJob,hourlyWeatherResponseJob)
-            _weatherInfoPackage.value = WeatherInfoPackage(list[0] as CurrentWeatherResponse,list[1] as ForecastResponse,list[2] as HourlyForecastResponse,locationInfo)
-        }
+        rerequestWeatherInfo(locationInfo,matrics,onError)
     }
-    fun rerequestWeatherInfo(locationInfo: LocationInfo,matrics:Boolean){
+    fun rerequestWeatherInfo(locationInfo: LocationInfo,matrics:Boolean,onError:(Exception)->Unit){
         viewModelScope.launch {
-            val currentWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestCurrentWeather(locationInfo.Key)
+            try {
+                val currentWeatherResponseJob = viewModelScope.async {
+                    weatherRepository.requestCurrentWeather(locationInfo.Key)
+                }
+                val hourlyWeatherResponseJob = viewModelScope.async {
+                    weatherRepository.requestHourlyWeather(locationInfo.Key,metric = matrics)
+                }
+                val forecastWeatherResponseJob = viewModelScope.async {
+                    weatherRepository.requestForecastWeather(locationInfo.Key,metric = matrics)
+                }
+                val list = awaitAll(currentWeatherResponseJob,forecastWeatherResponseJob,hourlyWeatherResponseJob)
+                _weatherInfoPackage.value = WeatherInfoPackage(list[0] as CurrentWeatherResponse,list[1] as ForecastResponse,list[2] as HourlyForecastResponse,locationInfo)
+
+            }catch (e:Exception){
+                onError(e)
             }
-            val hourlyWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestHourlyWeather(locationInfo.Key,metric = matrics)
-            }
-            val forecastWeatherResponseJob = viewModelScope.async {
-                weatherRepository.requestForecastWeather(locationInfo.Key,metric = matrics)
-            }
-            val list = awaitAll(currentWeatherResponseJob,forecastWeatherResponseJob,hourlyWeatherResponseJob)
-            _weatherInfoPackage.value = WeatherInfoPackage(list[0] as CurrentWeatherResponse,list[1] as ForecastResponse,list[2] as HourlyForecastResponse,locationInfo)
         }
     }
 
@@ -124,10 +118,14 @@ class MyAPPViewModel @Inject constructor(
 
 
 
-    fun queryLocationInfo(point: DevicePoint){
+    fun queryLocationInfo(point: DevicePoint,onError: (Exception) -> Unit){
         viewModelScope.launch {
-            val response = locationRepository.queryLocationByPoint(point)
-            locationRepository.insertLocation(response,1)
+            try {
+                val response = locationRepository.queryLocationByPoint(point)
+                locationRepository.insertLocation(response,1)
+            }catch (e:Exception){
+                onError(e)
+            }
         }
     }
 

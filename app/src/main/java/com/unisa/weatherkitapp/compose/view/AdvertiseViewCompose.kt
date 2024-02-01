@@ -30,8 +30,7 @@ fun AdvertiseViewCompose(
     val adView = remember {
         AdView(context).also {
             it.setAdSize(adsize)
-            it.adUnitId = adid  // 替换为你的 AdMob 广告单元 ID
-
+            it.adUnitId = adid
         }
     }
 

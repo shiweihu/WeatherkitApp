@@ -57,6 +57,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -69,6 +70,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -83,9 +85,11 @@ import com.google.android.gms.ads.AdSize
 import com.unisa.weatherkitapp.R
 import com.unisa.weatherkitapp.public.variable.LocalLocationInfo
 import com.unisa.weatherkitapp.public.variable.LocalUnitType
+import com.unisa.weatherkitapp.public.variable.LocalsnackbarHostState
 import com.unisa.weatherkitapp.public.variable.SEARCH_ADID
 import com.unisa.weatherkitapp.viewmodel.LocationSearchViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 
@@ -99,6 +103,10 @@ fun LocationSearchCompose(
     var searchFocusRequester by remember { mutableStateOf(false) }
     var showAutoList by remember{ mutableStateOf(true) }
     val focusManager = LocalFocusManager.current
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = LocalsnackbarHostState.current
+    val context = LocalContext.current
+
     Scaffold(
         modifier = Modifier.fillMaxSize(1f),
         topBar = {
@@ -167,7 +175,11 @@ fun LocationSearchCompose(
                             keyboardActions = KeyboardActions(
                                 onSearch = {
                                     keyboardController?.hide()
-                                    onSearchClick(query, model)
+                                    onSearchClick(query, model, onError = {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                                        }
+                                    })
                                     //hide the auto complete list
                                     showAutoList = false
                                 }
@@ -185,7 +197,11 @@ fun LocationSearchCompose(
         ) {
             Column {
                 if (searchFocusRequester && query.isEmpty()) {
-                    RecentSearchList() {
+                    RecentSearchList(onError = {
+                        scope.launch {
+                            snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                        }
+                    }) {
                         query = it
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -219,7 +235,8 @@ fun AutoCompleteBox(
             Spacer(modifier = Modifier.height(5.dp))
             LazyColumn(
                 modifier = Modifier
-                    .fillMaxWidth(1f).padding(5.dp,0.dp),
+                    .fillMaxWidth(1f)
+                    .padding(5.dp, 0.dp),
                 verticalArrangement = Arrangement.spacedBy(5.dp)
             ) {
                 items(autoCompleteList) {item->
@@ -232,8 +249,11 @@ fun AutoCompleteBox(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth(1f)
-                                .padding(5.dp, 5.dp).clickable {
-                                    model.requestLocationDetails(item.Key){
+                                .padding(5.dp, 5.dp)
+                                .clickable {
+                                    model.requestLocationDetails(item.Key, onError = {
+
+                                    }) {
                                         navigateFuc(Route.MAIN.name)
                                     }
                                 },
@@ -252,10 +272,11 @@ fun AutoCompleteBox(
 private fun onSearchClick(
     query: String,
     model: LocationSearchViewModel,
+    onError:(Exception)->Unit,
     setSearchText: (text: String) -> Unit = {}
 ) {
     if (query.isNotEmpty()) {
-        model.requestLocations(query)
+        model.requestLocations(query,onError = onError)
         setSearchText(query)
     }
 }
@@ -268,8 +289,9 @@ fun SearchedLocations(
     val list by model.usedLocations.collectAsStateWithLifecycle()
     val state = rememberLazyListState()
     val unitType = LocalUnitType.current
-
-
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = LocalsnackbarHostState.current
+    val context = LocalContext.current
 
     LazyColumn(
         state = state,
@@ -346,7 +368,11 @@ fun SearchedLocations(
                             val weatherResponseItemState by remember {
                                 model.requestCurrentWeatherWithoutDetail(
                                     item.locationInfo
-                                )
+                                ){
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                                    }
+                                }
                             }
                             Row(
                                 verticalAlignment = Alignment.CenterVertically
@@ -366,6 +392,7 @@ fun SearchedLocations(
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
                                             Image(
+                                                modifier = Modifier.size(25.dp),
                                                 painter = painterResource(
                                                     id = model.getImage(
                                                         weatherResponseItemState!!.WeatherIcon
@@ -437,7 +464,7 @@ fun SearchList(
                         .fillMaxWidth(0.95f)
                         .padding(3.dp, 5.dp)
                         .clickable {
-                            model.selectLocation(item){
+                            model.selectLocation(item) {
                                 navigateFuc(Route.MAIN.name)
                             }
                         }
@@ -458,6 +485,7 @@ fun SearchList(
 @Composable
 fun RecentSearchList(
     model: LocationSearchViewModel = hiltViewModel(),
+    onError: (Exception) -> Unit,
     setSearchText: (text: String) -> Unit
 ) {
     val list by model.historicalSearchList.collectAsStateWithLifecycle()
@@ -468,7 +496,7 @@ fun RecentSearchList(
         list.forEach { item ->
             SuggestionChip(modifier = Modifier.padding(3.dp, 3.dp), onClick =
             {
-                onSearchClick(item.text, model, setSearchText = setSearchText)
+                onSearchClick(item.text, model, setSearchText = setSearchText, onError = onError)
             }, label = { Text(text = "${item.text}") })
         }
     }

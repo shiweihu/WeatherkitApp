@@ -18,8 +18,8 @@ android {
         applicationId = "com.unisa.weatherkitapp"
         minSdk = 26
         targetSdk = 34
-        versionCode = 4
-        versionName = "4"
+        versionCode = 8
+        versionName = "8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -65,6 +65,8 @@ android {
 
 dependencies {
 
+    implementation("com.google.android.play:review:2.0.1")
+    implementation("com.google.android.play:review-ktx:2.0.1")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:2.11")
     implementation("com.google.android.gms:play-services-ads:22.6.0")
     implementation(platform("com.google.firebase:firebase-bom:32.7.0"))
@@ -80,7 +82,7 @@ dependencies {
 
     implementation("androidx.work:work-runtime-ktx:2.9.0")
     implementation("androidx.hilt:hilt-work:1.1.0")
-    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+    implementation("androidx.compose.runtime:runtime-livedata:1.6.0")
     // When using Kotlin.
     ksp("androidx.hilt:hilt-compiler:1.1.0")
 
@@ -98,7 +100,7 @@ dependencies {
     ksp("androidx.room:room-compiler:2.6.1")
     // 对于Kotlin项目，你还需要添加以下依赖以支持 Kotlin 协程
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.google.android.gms:play-services-location:21.1.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
     implementation("androidx.core:core-ktx:1.12.0")

@@ -35,6 +35,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,7 @@ import com.unisa.weatherkitapp.public.variable.LocalUnitType
 import com.unisa.weatherkitapp.public.variable.LocalsnackbarHostState
 import com.unisa.weatherkitapp.viewmodel.MyAPPViewModel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 @Composable
@@ -67,24 +69,35 @@ fun MyAPPCompose(
 
     val devicePoint = LocalDevice.current
     val isLocationEmpty by model.isLocationEmpty.collectAsStateWithLifecycle()
-    LaunchedEffect(key1 = isLocationEmpty) {
-        if (isLocationEmpty) {
-            model.queryLocationInfo(devicePoint)
-        }
-    }
+    val snackbarHostState = remember { SnackbarHostState() }
     val navController = rememberNavController()
     val locationInfo by model.selectedLocation.collectAsStateWithLifecycle()
     val unitTyoe = LocalUnitType.current
     val context = LocalContext.current
-    if (locationInfo != null) {
-        LaunchedEffect(key1 = locationInfo!!.Key, key2 = unitTyoe) {
-            model.requestWeatherInfo(locationInfo!!, matrics = unitTyoe)
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = isLocationEmpty) {
+        if (isLocationEmpty) {
+            model.queryLocationInfo(devicePoint){
+                scope.launch {
+                    snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                }
+            }
         }
-        val snackbarHostState = remember { SnackbarHostState() }
+    }
+    if (locationInfo != null) {
         CompositionLocalProvider(
             LocalLocationInfo provides locationInfo!!,
             LocalsnackbarHostState provides snackbarHostState
         ) {
+
+            LaunchedEffect(key1 = locationInfo!!.Key, key2 = unitTyoe) {
+                model.requestWeatherInfo(locationInfo!!, matrics = unitTyoe){
+                    scope.launch {
+                        snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                    }
+                }
+            }
+
             val configuration = LocalConfiguration.current
             val density = LocalDensity.current.density
             val screenWidthDP = configuration.screenWidthDp * density
@@ -145,7 +158,11 @@ fun MyAPPCompose(
                                         model.rerequestWeatherInfo(
                                             locationInfo!!,
                                             matrics = unitTyoe
-                                        )
+                                        ){
+                                            scope.launch {
+                                                snackbarHostState.showSnackbar(context.getString(R.string.network_error))
+                                            }
+                                        }
                                         return@LaunchedEffect
                                     }
                                     delay(60 * 1000 * 10) // 10分钟检查一次
