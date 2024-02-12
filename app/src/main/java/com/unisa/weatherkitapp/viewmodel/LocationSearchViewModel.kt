@@ -3,11 +3,15 @@ package com.unisa.weatherkitapp.viewmodel
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.text.toLowerCase
+import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.unisa.weatherkitapp.MyApplication
 import com.unisa.weatherkitapp.data.currentweather.CurrentWeatherResponseItem
 import com.unisa.weatherkitapp.data.locationdata.LocationInfo
+import com.unisa.weatherkitapp.data.locationdata.LocationResponse
 import com.unisa.weatherkitapp.repository.LocationRepository
 import com.unisa.weatherkitapp.repository.Utils
 import com.unisa.weatherkitapp.repository.WeatherRepository
@@ -17,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,9 +31,8 @@ class LocationSearchViewModel @Inject constructor(
     private val utils: Utils
 ) : ViewModel() {
 
-    //以前搜索过的文字
-    val historicalSearchList = locationRepository.querySearchHistory()
-        .stateIn(viewModelScope, started = SharingStarted.Lazily, initialValue = listOf())
+
+
 
     //用于保存搜索出来的location
     private val _locationList = mutableStateOf<List<LocationInfo>>(listOf())
@@ -39,6 +43,10 @@ class LocationSearchViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(),
         initialValue = listOf()
     )
+
+    fun requestTopCities()=locationRepository.getTopCitiesByCountry(MyApplication.COUNTRY_CODE.uppercase(
+        Locale.getDefault()
+    ))
 
     fun requestCurrentWeatherWithoutDetail(locationInfo: LocationInfo,onError:(Exception)->Unit): MutableState<CurrentWeatherResponseItem?> {
         val weatherForLocation = mutableStateOf<CurrentWeatherResponseItem?>(null)
@@ -100,9 +108,7 @@ class LocationSearchViewModel @Inject constructor(
     fun requestLocations(text: String,onError:(Exception)->Unit) {
         viewModelScope.launch {
             try {
-                locationRepository.insertSearchHistory(text)
-                val locations = locationRepository.queryLocation(text)
-                _locationList.value = locations
+                _locationList.value = locationRepository.queryLocation(text)
             }catch (e:Exception){
                 onError(e)
             }

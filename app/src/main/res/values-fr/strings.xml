@@ -126,4 +126,7 @@
     <string name="mold">Moisissure</string>
     <string name="ragweed">Pollen d\'ambroisie</string>
     <string name="tree">Pollen d\'arbre</string>
+    <string name="network_state">Le réseau est déconnecté</string>
+    <string name="top_cities">Meilleures villes</string>
+    <string name="life_index">Indice de vie</string>
 </resources>

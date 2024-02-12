@@ -126,4 +126,7 @@
     <string name="mold">मोल्ड</string>
     <string name="ragweed">मगवर्ट पराग</string>
     <string name="tree">वृक्ष पराग</string>
+    <string name="network_state">नेटवर्क डिस्कनेक्ट है</string>
+    <string name="top_cities">शीर्ष शहर</string>
+    <string name="life_index">जीवन सूचकांक</string>
 </resources>

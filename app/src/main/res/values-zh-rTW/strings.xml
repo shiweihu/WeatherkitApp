@@ -126,5 +126,7 @@
     <string name="mold">霉菌</string>
     <string name="ragweed">艾蒿花粉</string>
     <string name="tree">樹木花粉</string>
-
+    <string name="network_state">網絡已斷開</string>
+    <string name="top_cities">熱門城市</string>
+    <string name="life_index">生活指數</string>
 </resources>

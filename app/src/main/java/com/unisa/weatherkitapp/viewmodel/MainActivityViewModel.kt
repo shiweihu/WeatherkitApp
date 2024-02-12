@@ -11,13 +11,17 @@ import android.net.Uri
 import androidx.core.content.getSystemService
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.work.impl.utils.getActiveNetworkCompat
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.android.play.core.review.testing.FakeReviewManager
+import com.unisa.weatherkitapp.MyApplication
 import com.unisa.weatherkitapp.data.DevicePoint
 import com.unisa.weatherkitapp.dataStore
+import com.unisa.weatherkitapp.repository.LocationRepository
 import com.unisa.weatherkitapp.repository.Utils
+import com.unisa.weatherkitapp.room.TopCitiesEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
@@ -33,7 +37,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val utils: Utils
+    private val utils: Utils,
+    private val locationRepository: LocationRepository,
 ) : ViewModel() {
 //    val uiState: StateFlow<MainActivityUiState> = userDataRepository.userData.map {
 //        Success(it)
@@ -55,6 +60,20 @@ class MainActivityViewModel @Inject constructor(
             }
         }
     }
+
+    val topCitiesLanguage = locationRepository.getTopCitiesLanguage().asLiveData()
+
+    fun queryTopCities(){
+        viewModelScope.launch {
+            val topCitiesList = locationRepository.requestTopCities()
+            val list = topCitiesList.map {
+                TopCitiesEntity(locationId = it.Key, countryCode = it.Country.ID, locationInfo = it)
+            }
+            locationRepository.cleanAndInsertNew(list)
+        }
+    }
+
+
 
 
     private fun startGooglePlayRating(activity: Activity){

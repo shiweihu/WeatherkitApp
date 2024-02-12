@@ -126,4 +126,7 @@
     <string name="mold">Schimmel</string>
     <string name="ragweed">Ambrosia-Pollen</string>
     <string name="tree">Baumpollen</string>
+    <string name="network_state">Das Netzwerk ist getrennt</string>
+    <string name="top_cities">Top-Städte</string>
+    <string name="life_index">Lebensindex</string>
 </resources>

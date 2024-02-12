@@ -48,5 +48,15 @@ interface LocationProxy {
         @Query("details")details:Boolean = true,
     ):LocationInfo
 
+    @GET("locations/v1/topcities/{number}")
+    suspend fun requestTopCities(
+        @Path("number") number:Int=150,
+        @Query("apikey") api:String = NetworkModule.API_KEY,
+        @Query("language")language:String = MyApplication.LOCAL_LANGUAGE_CODE,
+        @Query("details")details:Boolean = true,
+    ):LocationResponse
+
+
+
 
 }

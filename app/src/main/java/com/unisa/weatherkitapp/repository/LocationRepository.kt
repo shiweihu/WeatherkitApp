@@ -2,21 +2,22 @@ package com.unisa.weatherkitapp.repository
 
 import com.unisa.weatherkitapp.data.DevicePoint
 import com.unisa.weatherkitapp.data.locationdata.LocationInfo
-import com.unisa.weatherkitapp.data.locationdata.LocationResponse
 import com.unisa.weatherkitapp.net.LocationProxy
-import com.unisa.weatherkitapp.room.HistoricalSearchDao
-import com.unisa.weatherkitapp.room.HistoricalSearchEntity
 import com.unisa.weatherkitapp.room.LocationDao
 import com.unisa.weatherkitapp.room.LocationEntity
+import com.unisa.weatherkitapp.room.TopCitiesDao
+import com.unisa.weatherkitapp.room.TopCitiesEntity
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class LocationRepository @Inject constructor(
     private val locationDao: LocationDao,
-    private val historicalSearchDao: HistoricalSearchDao,
+    private val topCitiesDao: TopCitiesDao,
     private val locationProxy: LocationProxy
 ) {
+
+    suspend fun requestTopCities()=locationProxy.requestTopCities()
 
     suspend fun requestLocationDetail(key:String) = locationProxy.requestLocationInfoDetail(locationId = key)
     suspend fun autoComplete(text:String) = locationProxy.autoComplete(text = text)
@@ -29,11 +30,9 @@ class LocationRepository @Inject constructor(
 
     fun getLocations() = locationDao.getLocations()
 
-    fun querySearchHistory() = historicalSearchDao.queryList()
-
-    suspend fun insertSearchHistory(text:String){
-        historicalSearchDao.insertHistoricalSearch(HistoricalSearchEntity(text))
-    }
+    fun getTopCitiesByCountry(code:String)=topCitiesDao.selectTopCitiesByCountry(code)
+    fun getTopCitiesLanguage() = topCitiesDao.getTopCitiesLanguage()
+    suspend fun cleanAndInsertNew(list:List<TopCitiesEntity>) = topCitiesDao.cleanAndInsertNew(list)
 
     suspend fun insertLocation(LocationInfo: LocationInfo, selected:Int){
         val entity = LocationEntity(locationId = LocationInfo.Key, locationInfo = LocationInfo,selected = selected)
@@ -45,8 +44,6 @@ class LocationRepository @Inject constructor(
     }
 
     suspend fun deleteLocation(id:String) = locationDao.deleteLocation(id)
-
-
 
 
 }

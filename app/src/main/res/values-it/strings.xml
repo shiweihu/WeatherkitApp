@@ -126,4 +126,7 @@
     <string name="mold">Muffa</string>
     <string name="ragweed">Polleni di ambrosia</string>
     <string name="tree">Polleni di alberi</string>
+    <string name="network_state">La rete è disconnessa</string>
+    <string name="top_cities">Città principali</string>
+    <string name="life_index">Indice di vita</string>
 </resources>

@@ -126,4 +126,7 @@
     <string name="mold">Moho</string>
     <string name="ragweed">Polen de ambrosía</string>
     <string name="tree">Polen de árbol</string>
+    <string name="network_state">La red está desconectada</string>
+    <string name="top_cities">Principales ciudades</string>
+    <string name="life_index">Índice de vida</string>
 </resources>

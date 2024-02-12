@@ -127,4 +127,6 @@
     <string name="ragweed">Mugwort pollen</string>
     <string name="tree">Tree pollen</string>
     <string name="network_state">Network is disconnection</string>
+    <string name="top_cities">Top Cities</string>
+    <string name="life_index">Life Index</string>
 </resources>

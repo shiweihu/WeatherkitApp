@@ -126,4 +126,7 @@
     <string name="mold">Микотоксины</string>
     <string name="ragweed">Пыльца полыни</string>
     <string name="tree">Пыльца деревьев</string>
+    <string name="network_state">Сеть отключена</string>
+    <string name="top_cities">Лучшие города</string>
+    <string name="life_index">Индекс жизни</string>
 </resources>

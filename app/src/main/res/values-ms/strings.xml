@@ -126,4 +126,7 @@
     <string name="mold">Kulat</string>
     <string name="ragweed">Serbuk Rumput</string>
     <string name="tree">Serbuk Pokok</string>
+    <string name="network_state">Rangkaian terputus</string>
+    <string name="top_cities">Bandar-bandar Teratas</string>
+    <string name="life_index">Indeks Kehidupan</string>
 </resources>

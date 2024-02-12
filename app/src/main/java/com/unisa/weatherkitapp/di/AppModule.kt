@@ -3,8 +3,8 @@ package com.unisa.weatherkitapp.di
 import android.content.Context
 import com.unisa.weatherkitapp.MyApplication
 import com.unisa.weatherkitapp.room.AppDatabase
-import com.unisa.weatherkitapp.room.HistoricalSearchDao
 import com.unisa.weatherkitapp.room.LocationDao
+import com.unisa.weatherkitapp.room.TopCitiesDao
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,9 +36,12 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideHistoricalSearchDao(appDatabase: AppDatabase): HistoricalSearchDao {
-        return appDatabase.historicalSearchDao()
+    fun provideTopCitiesDao(appDatabase: AppDatabase): TopCitiesDao {
+        return appDatabase.topCitiesDao()
     }
+
+
+
 
 
 

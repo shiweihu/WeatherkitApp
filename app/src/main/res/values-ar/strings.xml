@@ -126,4 +126,7 @@
     <string name="mold">العفن</string>
     <string name="ragweed">حبوب المرار</string>
     <string name="tree">حبوب الأشجار</string>
+    <string name="network_state">الشبكة مفصولة</string>
+    <string name="top_cities">أفضل المدن</string>
+    <string name="life_index">مؤشر الحياة</string>
 </resources>

@@ -197,7 +197,7 @@ fun MainCompose(
                     bottomSheetData = it
                 }
                 Spacer(modifier = Modifier.height(10.dp))
-                AdvertiseViewCompose(adsize = AdSize.LARGE_BANNER, adid = MAINCOMPOSE_ADID)
+                AdvertiseViewCompose(adsize = AdSize.LARGE_BANNER, adid = MAINCOMPOSE_ADID, keyWords = listOf(locationInfo.EnglishName,locationInfo.Country.EnglishName))
                 Spacer(modifier = Modifier.height(10.dp))
                 IndexCompose() {
                     showBottomSheet = true

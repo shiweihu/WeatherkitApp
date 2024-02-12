@@ -122,6 +122,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         setLanguageCode()
+
+        model.topCitiesLanguage.observe(this){
+            if(it == null || it != MyApplication.LOCAL_LANGUAGE_CODE){
+                model.queryTopCities()
+            }
+        }
     }
 
     private fun setLanguageCode() {
@@ -134,6 +140,7 @@ class MainActivity : ComponentActivity() {
                 it.contains(countryCode)
             } ?: languageCode
         }
+        MyApplication.COUNTRY_CODE = Locale.getDefault().country
     }
 
 

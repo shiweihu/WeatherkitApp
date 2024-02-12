@@ -21,8 +21,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -37,7 +35,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedCard
@@ -52,22 +49,16 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusModifier
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.focusTarget
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
@@ -76,14 +67,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.android.gms.ads.AdSize
 import com.unisa.weatherkitapp.R
-import com.unisa.weatherkitapp.public.variable.LocalLocationInfo
 import com.unisa.weatherkitapp.public.variable.LocalUnitType
 import com.unisa.weatherkitapp.public.variable.LocalsnackbarHostState
 import com.unisa.weatherkitapp.public.variable.SEARCH_ADID
@@ -197,13 +186,7 @@ fun LocationSearchCompose(
         ) {
             Column {
                 if (searchFocusRequester && query.isEmpty()) {
-                    RecentSearchList(onError = {
-                        scope.launch {
-                            snackbarHostState.showSnackbar(context.getString(R.string.network_error))
-                        }
-                    }) {
-                        query = it
-                    }
+                    TopCityCompose(navigateFuc = navigateFuc)
                     Spacer(modifier = Modifier.height(20.dp))
                     AdvertiseViewCompose(adsize = AdSize.LARGE_BANNER, adid = SEARCH_ADID)
                 } else if (!searchFocusRequester && query.isEmpty()) {
@@ -483,23 +466,30 @@ fun SearchList(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun RecentSearchList(
+fun TopCityCompose(
     model: LocationSearchViewModel = hiltViewModel(),
-    onError: (Exception) -> Unit,
-    setSearchText: (text: String) -> Unit
+    navigateFuc: (route: String) -> Unit,
 ) {
-    val list by model.historicalSearchList.collectAsStateWithLifecycle()
-    val state = rememberLazyListState()
-    FlowRow(
-        modifier = Modifier.fillMaxWidth(1f),
+    val list by model.requestTopCities().collectAsStateWithLifecycle(initialValue = listOf())
+    Column(
+        modifier = Modifier.padding(5.dp, 0.dp)
     ) {
-        list.forEach { item ->
-            SuggestionChip(modifier = Modifier.padding(3.dp, 3.dp), onClick =
-            {
-                onSearchClick(item.text, model, setSearchText = setSearchText, onError = onError)
-            }, label = { Text(text = "${item.text}") })
+        Text(text = "${stringResource(id = R.string.top_cities)}:", style = MaterialTheme.typography.titleLarge)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(1f),
+        ) {
+            list.forEach { item ->
+                SuggestionChip(modifier = Modifier.padding(3.dp, 3.dp), onClick =
+                {
+                    model.selectLocation(item.locationInfo){
+                        navigateFuc(Route.MAIN.name)
+                    }
+                }, label = { Text(text = item.locationInfo.LocalizedName) })
+            }
         }
     }
+    //val state = rememberLazyListState()
+
 }
 
 @Preview

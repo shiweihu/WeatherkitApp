@@ -126,5 +126,7 @@
     <string name="mold">곰팡이</string>
     <string name="ragweed">소양아치 꽃가루</string>
     <string name="tree">나무 꽃가루</string>
-
+    <string name="network_state">네트워크가 연결되어 있지 않습니다</string>
+    <string name="top_cities">인기 있는 도시</string>
+    <string name="life_index">생활 지수</string>
 </resources>

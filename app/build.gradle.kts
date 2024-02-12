@@ -7,19 +7,25 @@ plugins {
     id("com.google.firebase.firebase-perf")
 // Add the Crashlytics Gradle plugin
     id("com.google.firebase.crashlytics")
+    id("androidx.room")
     //id("kotlin-kapt")
 }
+
 
 android {
     namespace = "com.unisa.weatherkitapp"
     compileSdk = 34
 
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     defaultConfig {
         applicationId = "com.unisa.weatherkitapp"
         minSdk = 26
         targetSdk = 34
-        versionCode = 8
-        versionName = "8"
+        versionCode = 10
+        versionName = "10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -43,6 +49,7 @@ android {
             buildConfigField("String", "search_banner", "\"ca-app-pub-3940256099942544/6300978111\"")
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8

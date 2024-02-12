@@ -126,4 +126,7 @@
     <string name="mold">カビ</string>
     <string name="ragweed">ヨモギの花粉</string>
     <string name="tree">木の花粉</string>
+    <string name="network_state">ネットワークが切断されています</string>
+    <string name="top_cities">トップの都市</string>
+    <string name="life_index">生活指数</string>
 </resources>

@@ -52,23 +52,25 @@ fun IndexCompose(
 ) {
     val context = LocalContext.current
     val indices = remember { model.getIndicesMap() }
-
-    LazyHorizontalGrid(
-        modifier = Modifier
-            .height(150.dp)
-            .padding(5.dp, 0.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp),
-        verticalArrangement = Arrangement.spacedBy(5.dp),
-        rows = GridCells.Fixed(2)
+    Column(
+        modifier = Modifier.padding(5.dp, 0.dp)
     ) {
-        items(indices.toList(), itemContent = { (key, value) ->
-            val iconRes = model.getIndicesIcons(value)
-            IndexItems(text = stringResource(id = key), icon = iconRes){
-                openBottomSheet(value)
-            }
-        })
+        Text(text = "${stringResource(id = R.string.life_index)}:", style = MaterialTheme.typography.titleLarge)
+        LazyHorizontalGrid(
+            modifier = Modifier
+                .height(150.dp),
+            horizontalArrangement = Arrangement.spacedBy(5.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
+            rows = GridCells.Fixed(2)
+        ) {
+            items(indices.toList(), itemContent = { (key, value) ->
+                val iconRes = model.getIndicesIcons(value)
+                IndexItems(text = stringResource(id = key), icon = iconRes){
+                    openBottomSheet(value)
+                }
+            })
+        }
     }
-
 }
 
 @Composable

@@ -23,7 +23,8 @@ import com.google.android.gms.ads.AdView
 @Composable
 fun AdvertiseViewCompose(
     adid:String = "ca-app-pub-3940256099942544/6300978111",
-    adsize:AdSize = AdSize.BANNER
+    adsize:AdSize = AdSize.BANNER,
+    keyWords:List<String> = listOf()
 ) {
     val context = LocalContext.current
     // 创建 AdView

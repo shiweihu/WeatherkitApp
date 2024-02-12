@@ -1,17 +1,27 @@
 package com.unisa.weatherkitapp.room
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Database
+import androidx.room.DeleteTable
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.AutoMigrationSpec
 import androidx.sqlite.db.SupportSQLiteDatabase
 
 @TypeConverters(Converters::class)
-@Database(entities = [LocationEntity::class,HistoricalSearchEntity::class], version = 1, exportSchema = false)
+@Database(entities = [LocationEntity::class,TopCitiesEntity::class], version = 2, exportSchema = true, autoMigrations = [AutoMigration (from = 1, to = 2, spec = AppDatabase.MyAutoMigration::class)])
 abstract class AppDatabase : RoomDatabase(){
     abstract fun locationDao(): LocationDao
-    abstract fun historicalSearchDao():HistoricalSearchDao
+    //abstract fun historicalSearchDao():HistoricalSearchDao
+
+    abstract fun topCitiesDao():TopCitiesDao
+
+    @DeleteTable(tableName = "HistoricalSearchEntity")
+    class MyAutoMigration : AutoMigrationSpec
+
+
     companion object {
         const val DATABASE_NAME = "weather_database"
         // For Singleton instantiation

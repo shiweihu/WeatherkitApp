@@ -31,6 +31,7 @@ class MyApplication : Application(), Configuration.Provider {
     companion object{
         var cache:Cache? = null
         var LOCAL_LANGUAGE_CODE = "en"
+        var COUNTRY_CODE = "au"
     }
 
 
