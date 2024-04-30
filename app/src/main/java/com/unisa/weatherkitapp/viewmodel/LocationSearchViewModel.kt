@@ -48,6 +48,7 @@ class LocationSearchViewModel @Inject constructor(
         Locale.getDefault()
     ))
 
+
     fun requestCurrentWeatherWithoutDetail(locationInfo: LocationInfo,onError:(Exception)->Unit): MutableState<CurrentWeatherResponseItem?> {
         val weatherForLocation = mutableStateOf<CurrentWeatherResponseItem?>(null)
         viewModelScope.launch {

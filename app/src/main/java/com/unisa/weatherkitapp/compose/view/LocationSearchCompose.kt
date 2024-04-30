@@ -3,6 +3,7 @@ package com.unisa.weatherkitapp.compose.view
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
 import android.icu.util.TimeZone
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -471,6 +472,7 @@ fun TopCityCompose(
     navigateFuc: (route: String) -> Unit,
 ) {
     val list by model.requestTopCities().collectAsStateWithLifecycle(initialValue = listOf())
+
     Column(
         modifier = Modifier.padding(5.dp, 0.dp)
     ) {
